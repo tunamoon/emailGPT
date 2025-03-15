@@ -6,7 +6,7 @@ This project demonstrates how to build a Chrome extension using [React](https://
 
 ### Install From Release
 
-- Download the latest release from the [Releases](https://github.com/jlumbroso/chrome-extension-text-collector/releases)
+- Download the latest release from the [Releases](https://github.com/CIS-3500/chrome-extension-react-typescript-vite-starter-main/releases)
 - Unzip the downloaded ZIP file
 - Open Chrome and navigate to `chrome://extensions`
 - Enable "Developer mode"
@@ -17,13 +17,13 @@ This project demonstrates how to build a Chrome extension using [React](https://
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/jlumbroso/chrome-extension-text-collector
+   git clone https://github.com/CIS-3500/chrome-extension-react-typescript-vite-starter-main
    ```
 
 2. Install dependencies:
 
    ```bash
-   cd chrome-extension-text-collector
+   cd chrome-extension-react-typescript-vite-starter-main
    npm install
    ```
 
@@ -117,5 +117,7 @@ You are welcome to use this repository as a starting point for your own work. Th
 ## Credits
 
 The initial setup of this project was based on the tutorial by [Harshita Joshi](https://github.com/Harshita-mindfire) on creating a Chrome extension with React and TypeScript. The corresponding Medium article can be found [here](https://medium.com/@tharshita13/creating-a-chrome-extension-with-react-a-step-by-step-guide-47fe9bab24a1).
+
+Further setup was done by [Michelle Chang](https://github.com/michellechang02) by replacing the Webpack initialization of the app with Vite.
 
 The project has been extended with additional functionality, testing setup, and documentation. The most difficult part was figuring out the right combination of packages for the testing suite (for instance, I would avoid `jest-chrome`, `mockzilla`, `mockzilla-webextension`, to name but a few).
