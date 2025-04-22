@@ -14,8 +14,9 @@ Work on separate branches
 - gmail blue, orange, white
 
 # Responsibilities
-- Luna: UI, landing page, manage pull requests, readme, testing documentation
+- Luna: UI, manage pull requests, readme, testing documentation
 - Lisa: Action Items
-- Emma: Summarizing
+- Emma: Summarizing, landing
 - Alan: Message by message breakdown
+- All: slides
 
