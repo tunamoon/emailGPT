@@ -1,5 +1,6 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import "../App.css";
+import { GeminiService, GeminiResponse } from "../GeminiService";
 
 interface CheckboxProps {
   label: string;
@@ -9,6 +10,7 @@ interface CheckboxProps {
 
 type Props = {
     onLogout: () => void;
+    apiKey: string;
 }
 const Checkbox: React.FC<CheckboxProps> = ({ label, onChange, checked }) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -23,12 +25,34 @@ const Checkbox: React.FC<CheckboxProps> = ({ label, onChange, checked }) => {
   );
 };
 
-function MainScreen({ onLogout}: Props) {
+function MainScreen({ onLogout, apiKey }: Props) {
   const [isChecked1, setIsChecked1] = useState(false);
   const [isChecked2, setIsChecked2] = useState(false);
   const [isChecked3, setIsChecked3] = useState(false);
   const [textValue, setTextValue] = useState<string>("");
-  const [apiValue, setApiValue] = useState<string>("");
+  const [responseText, setResponseText] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isApiKeyValid, setIsApiKeyValid] = useState<boolean>(true);
+
+  // Check API key when component loads
+  useEffect(() => {
+    validateApiKey();
+  }, [apiKey]);
+
+  const validateApiKey = async () => {
+    try {
+      const geminiService = new GeminiService(apiKey);
+      const validation = await geminiService.validateApiKey();
+      setIsApiKeyValid(validation.valid);
+      if (!validation.valid) {
+        setError(`API key validation failed: ${validation.error}. Please log out and enter a valid key.`);
+      }
+    } catch (err) {
+      setIsApiKeyValid(false);
+      setError("Failed to validate API key. Please log out and try again.");
+    }
+  };
 
   const handleCheckBoxChange1 = (checked: boolean) => {
     setIsChecked1(checked);
@@ -50,21 +74,45 @@ function MainScreen({ onLogout}: Props) {
     setTextValue(event.target.value);
   };
 
-  const handleApiChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setApiValue(event.target.value);
-  };
-
-  const handleDone = () => {
+  const handleDone = async () => {
     const isCheckboxSelected = isChecked1 || isChecked2 || isChecked3;
     if (!isCheckboxSelected) {
       alert("Please select one option.");
       return;
     }
-    if (textValue.trim() === "" || apiValue.trim() === "") {
-      alert("Please fill out both the email content and the API key.");
+    if (textValue.trim() === "") {
+      alert("Please fill out the email content.");
       return;
     }
-    alert("All good! Submitting...");
+    
+    // Validate API key before proceeding
+    if (!isApiKeyValid) {
+      setError("Your API key appears to be invalid. Please log out and enter a valid key.");
+      return;
+    }
+    
+    setIsLoading(true);
+    setError(null);
+    
+    let analysisType = "";
+    if (isChecked1) analysisType = "action-items";
+    if (isChecked2) analysisType = "summarize";
+    if (isChecked3) analysisType = "message-breakdown";
+    
+    try {
+      const geminiService = new GeminiService(apiKey);
+      const response = await geminiService.analyzeEmail(textValue, analysisType);
+      
+      if (response.error) {
+        setError(response.error);
+      } else {
+        setResponseText(response.text);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -76,7 +124,7 @@ function MainScreen({ onLogout}: Props) {
         id="my-textbox"
         value={textValue}
         onChange={handleTextChange}
-        style={{ width: "400px", height: "400px", fontSize: "12px", textAlign: "left"}}
+        style={{ width: "400px", height: "200px", fontSize: "12px", textAlign: "left"}}
       />
       <div>
         <Checkbox
@@ -94,14 +142,25 @@ function MainScreen({ onLogout}: Props) {
           onChange={(checked) => checked && uncheckOthers(3)}
           checked={isChecked3}
         />
-
       </div>
-      <div>
-      </div>
-      <button onClick={handleDone}>Done</button>
+      
+      <button onClick={handleDone} disabled={isLoading || !isApiKeyValid}>
+        {isLoading ? "Processing..." : "Analyze Email"}
+      </button>
       <button onClick={onLogout}>Log out</button>
 
+      {error && (
+        <div className="error-message">
+          <p>Error: {error}</p>
+        </div>
+      )}
 
+      {responseText && (
+        <div className="response-container">
+          <h3>Analysis Result:</h3>
+          <div className="response-text">{responseText}</div>
+        </div>
+      )}
     </div>
   );
 }

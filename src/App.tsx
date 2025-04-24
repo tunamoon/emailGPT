@@ -26,5 +26,5 @@ export default function App() {
   if (loading) return null;              // (tiny splash / skeleton optional)
   if (!apiKey) return <ApiKeyForm onSave={setApiKey} />;
 
-  return <MainScreen onLogout={logout} />;
+  return <MainScreen onLogout={logout} apiKey={apiKey} />;
 }
