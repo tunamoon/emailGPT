@@ -9,6 +9,9 @@ Work on separate branches
      7. `git push origin [your current branch]`
 - make a pull request, add luna as a reviewer
 - try not to push directly to main if possible
+Updating chrome extension
+- to update the actual chrome extension, rerun `npm run build`
+- run `npm run dev` to find the local version that updates immediately after you change code
 
 # Colors
 - gmail blue, orange, white
