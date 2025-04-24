@@ -35,9 +35,28 @@ function MainScreen({ onLogout, apiKey }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [isApiKeyValid, setIsApiKeyValid] = useState<boolean>(true);
 
-  // Check API key when component loads
+  // Check API key when component loads and load previous results
   useEffect(() => {
     validateApiKey();
+    
+    // Load previous session data if available
+    chrome.storage.local.get(
+      ['lastAnalysisResult', 'lastEmailContent', 'lastAnalysisType'], 
+      (result) => {
+        if (result.lastAnalysisResult) {
+          setResponseText(result.lastAnalysisResult);
+        }
+        if (result.lastEmailContent) {
+          setTextValue(result.lastEmailContent);
+        }
+        if (result.lastAnalysisType) {
+          // Set the appropriate checkbox based on previously selected analysis type
+          if (result.lastAnalysisType === 'action-items') uncheckOthers(1);
+          if (result.lastAnalysisType === 'summarize') uncheckOthers(2);
+          if (result.lastAnalysisType === 'message-breakdown') uncheckOthers(3);
+        }
+      }
+    );
   }, [apiKey]);
 
   const validateApiKey = async () => {
@@ -99,6 +118,12 @@ function MainScreen({ onLogout, apiKey }: Props) {
     if (isChecked2) analysisType = "summarize";
     if (isChecked3) analysisType = "message-breakdown";
     
+    // Save the current email content and analysis type
+    chrome.storage.local.set({ 
+      lastEmailContent: textValue,
+      lastAnalysisType: analysisType 
+    });
+    
     try {
       const geminiService = new GeminiService(apiKey);
       const response = await geminiService.analyzeEmail(textValue, analysisType);
@@ -107,6 +132,9 @@ function MainScreen({ onLogout, apiKey }: Props) {
         setError(response.error);
       } else {
         setResponseText(response.text);
+        
+        // Save the result to Chrome storage
+        chrome.storage.local.set({ lastAnalysisResult: response.text });
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
