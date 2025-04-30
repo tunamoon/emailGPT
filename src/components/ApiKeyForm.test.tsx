@@ -4,6 +4,18 @@ import ApiKeyForm from "./ApiKeyForm";
 import { GeminiService } from "../GeminiService";
 
 jest.mock("../GeminiService");
+
+global.chrome = {
+    storage: {
+      local: {
+        set: jest.fn((data, callback) => {
+          // Call the callback immediately for testing
+          if (callback) callback();
+        })
+      }
+    }
+  } as any;
+  
 describe("ApiKeyForm", () => {
     const mockOnSave = jest.fn();
   
@@ -63,7 +75,10 @@ describe("ApiKeyForm", () => {
     
     await waitFor(() => {
       expect(mockOnSave).toHaveBeenCalledWith("valid-key");
-      expect(chrome.storage.local.set).toHaveBeenCalledWith({ apiKey: "valid-key" }, expect.any(Function));
+      expect(chrome.storage.local.set).toHaveBeenCalledWith(
+        { apiKey: "valid-key" }, 
+        expect.any(Function)
+      );
     });
   });
 
