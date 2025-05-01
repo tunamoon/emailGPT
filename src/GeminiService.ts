@@ -27,7 +27,7 @@ export class GeminiService {
       console.error('API key validation failed:', error);
       return { 
         valid: false,
-        error: error instanceof Error ? error.message : 'Invalid API key or service unavailable'
+        error: "Invalid API key. Please check your key and try again."
       };
     }
   }
