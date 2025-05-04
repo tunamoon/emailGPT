@@ -34,7 +34,7 @@ Updating chrome extension
 - gmail blue, orange, white
 
 # Individual Contributions
-- Luna: UI pages, managing errors by users, readme
+- Luna: UI pages, managing errors by users, readme, about button, milestone demo video
 - Lisa: slides, testing documentation
 - Emma: Landing Page, team management/communication
 - Alan: Integrate with api key, implement summarizing, action items, message by message breakdown, saving most recent entry and result

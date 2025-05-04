@@ -176,6 +176,16 @@ function MainScreen({ onLogout, apiKey }: Props) {
         {isLoading ? "Processing..." : "Analyze Email"}
       </button>
       <button onClick={onLogout}>Log out</button>
+      <button
+        onClick={() =>
+            window.open(
+            "https://github.com/etwitmyer/EmailGPT-Page",
+            "_blank"
+            )
+        }
+    > 
+        About
+     </button>
 
       {error && (
         <div className="error-message">
