@@ -143,6 +143,14 @@ function MainScreen({ onLogout, apiKey }: Props) {
     }
   };
 
+  const getButtonLabel = () => {
+    if (isLoading) return "Processing...";
+    if (isChecked1) return "Find My Action Items";
+    if (isChecked2) return "Summarize This Thread";
+    if (isChecked3) return "Break Down Messages";
+    return "Analyze Email";
+  };
+
   return (
     <div className="App">
       <p>Breaking Chains</p>
@@ -173,9 +181,19 @@ function MainScreen({ onLogout, apiKey }: Props) {
       </div>
       
       <button onClick={handleDone} disabled={isLoading || !isApiKeyValid}>
-        {isLoading ? "Processing..." : "Analyze Email"}
+        {getButtonLabel()}
       </button>
       <button onClick={onLogout}>Log out</button>
+      <button
+        onClick={() =>
+            window.open(
+            "https://github.com/etwitmyer/EmailGPT-Page",
+            "_blank"
+            )
+        }
+    > 
+        About
+     </button>
 
       {error && (
         <div className="error-message">
