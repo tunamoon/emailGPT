@@ -72,8 +72,8 @@ An email thread started by Julia Kim to confirm if Thursday at 2pm works for q3 
 ---
 **Expected Action Items:**
 
-Confirm Availability (Marketing Team)
-Send out calendar invite and agenda : Julia Kim, by EOD Monday April 22, 2025
+Send out calendar invite: Julia Kim, by EOD Monday April 22, 2025
+Send out calendar Agenda: Julia Kim, by EOD Monday April 22, 2025 
 
 ---
 ---
@@ -119,41 +119,61 @@ Requests/Questions:
 None.
 
 ---
-**Model Used: Gemini 2.5 Pro**
+**Model Used: Gemini 2.0 Flash**
 ---
 
 **Actual Summary:**
-Julia Kim proposed a Q3 marketing campaign kickoff call for Thursday, April 25, 2025, at 2 PM to discuss objectives, roles, and timeline. Daniel Reyes and Priya Nair confirmed their availability. Priya also requested to discuss Q2 social media performance. Julia confirmed the meeting time and will send a calendar invite and agenda by the end of Monday, April 22, 2025.
+A kickoff meeting for the Q3 Marketing Campaign is scheduled for **Thursday at 2 PM**. The meeting aims to align on objectives, assign initial roles, and discuss the timeline. Julia Kim will send a calendar invite and agenda.
 
 ---
 **Actual Action Items:**
-Confirm availability for the kickoff call (Marketing Team).
-Send out a calendar invite for the kickoff call (Julia Kim).
-Send out an agenda for the kickoff call (Julia Kim) - by EOD on Monday, April 22, 2025.
+* Send out a calendar invite for the Q3 marketing campaign kickoff call (scheduled for Thursday at 2 PM).
+* **Responsible:** Julia Kim
+* **Deadline:** By End of Day (EOD) on Monday, April 22, 2025
+
+* Send out an agenda for the Q3 marketing campaign kickoff call.
+* **Responsible:** Julia Kim
+* **Deadline:** By End of Day (EOD) on Monday, April 22, 2025
 
 ---
 **Actual Message by Message Breakdown:**
 
-Message 1
+**Message 1**
 
-Sender: Julia Kim (j.kim@company.com)
-Main points: Proposing a kickoff call for the Q3 marketing campaign. The call is scheduled for this Thursday at 2 PM. The purpose is to align on objectives, assign initial roles, and discuss the timeline.
-Requests or questions raised: Please confirm your availability.
-Message 2
+1. **Sender:** Julia Kim
+2. **Main Points:**
+* Announces the need to begin planning the Q3 marketing campaign.
+* Proposes a kickoff meeting for Thursday at 2 PM.
+* Outlines the purpose of the meeting: align on objectives, assign initial roles, discuss timeline.
+3. **Requests or Questions Raised:**
+* Asks team members to confirm their availability for the proposed meeting time (Thursday at 2 PM).
 
-Sender: Daniel Reyes (d.reyes@company.com)
-Main points: Confirms availability for Thursday at 2 PM. Expresses interest in discussing lead generation strategies.
-Requests or questions raised: None.
-Message 3
+**Message 2**
 
-Sender: Priya Nair (p.nair@company.com)
-Main points: Confirms availability for Thursday. Suggests discussing social media performance in Q2 and applying insights to the Q3 rollout.
-Requests or questions raised: Could we also touch on social media performance in Q2?
-Message 4
+1. **Sender:** Daniel Reyes
+2. **Main Points:**
+* Confirms availability for the proposed meeting time (Thursday at 2 PM).
+* Expresses interest in discussing lead generation strategies during the meeting.
+3. **Requests or Questions Raised:**
+* None. (He expresses interest in a topic, but doesn't phrase it as a direct request to add it).
 
-Sender: Julia Kim (j.kim@company.com)
-Main points: Acknowledges that Thursday at 2 PM works for everyone. Confirms she will send out a calendar invite and agenda by the end of the day (EOD).
-Requests or questions raised: None.
+**Message 3**
+
+1. **Sender:** Priya Nair
+2. **Main Points:**
+* Confirms availability for the proposed meeting time (Thursday).
+* Indicates she has insights from Q2 social media performance that could be relevant for Q3.
+3. **Requests or Questions Raised:**
+* Asks if they can discuss Q2 social media performance during the kickoff meeting.
+
+**Message 4**
+
+1. **Sender:** Julia Kim
+2. **Main Points:**
+* Acknowledges that the proposed meeting time (Thursday at 2 PM) seems to work for everyone.
+* States she will send a calendar invitation and agenda by the end of the day (EOD).
+3. **Requests or Questions Raised:**
+* None. (This message confirms action will be taken).
 
 ---
 
@@ -216,7 +236,7 @@ Date: Fri, April 26, 2025 at 12:11 PM
 Yeah—better let them know so we don’t end up squeezed in 😂
 Thanks!
 
-**Model Used: Gemini 2.5 Pro**
+**Model Used: Gemini 2.0 Flash**
 **Expected Summary:**
 A discussion about upcoming plans between Alex and Jamie. Alex and Jamie confirm dinner plans at Sao Paolo, 7:30pm and ticket booking.  Alex mentions modifying restaurant number to include order. 
 
@@ -291,37 +311,49 @@ None.
 ---
 
 **Actual Summary:**
-Alex and Jamie confirmed their dinner plans for Friday, April 26th at 7:30 PM at Paolo's. Jamie had already booked movie tickets (screen 5, row D seats 7 & 8). Alex later mentioned that Lisa might join them for dinner. Jamie offered to inform the restaurant to accommodate three people, which Alex agreed was a good idea.
+* **Dinner Confirmed:** Alex and Jamie confirmed dinner plans for tonight (Friday, April 26) at 7:30 PM at Paolo's.
+* **Movie Tickets Booked:** Jamie confirmed she booked the movie tickets.
+* **Guest Added:** Alex informed Jamie that Lisa might join them for dinner.
+* **Reservation Update:** Jamie agreed to Lisa joining and will update the restaurant reservation to three people.
 
 **Actual Action Items:**
-Tell the restaurant to make the reservation for 3 people (Jamie Lee).
+* Inform the restaurant (Paolo's) to change the reservation to 3 people.
+* Responsible: Jamie Lee
+* Deadline: Implicitly before dinner at 7:30 PM on Fri, April 26.
 
 **Actual Message by Message Breakdown:**
-Message 1
+**Message 1**
 
-Sender: Alex Rivera (alex.r@gmail.com)
-Main points: Checking in about dinner plans for tonight at 7:30 PM at Paolo's. Also asking if Jamie booked the movie tickets.
-Requests or questions raised: Are we still good for dinner tonight? 7:30 at Paolo’s? Let me know if we need to change anything. Did you book the movie tickets yet?
-Message 2
+* **Sender:** Alex Rivera
+* **Main Points:** Checking in about dinner plans for that night. Confirming the time (7:30 PM) and location (Paolo's).
+* **Requests/Questions Raised:**
+* Are the dinner plans (7:30 PM at Paolo's) still confirmed?
+* Should any changes be made to the plans?
+* Did Jamie book the movie tickets yet?
 
-Sender: Jamie Lee (jamie.lee@yahoo.com)
-Main points: Confirming dinner at Paolo's at 7:30 PM and that she booked the movie tickets (screen 5, row D seats 7 & 8).
-Requests or questions raised: None.
-Message 3
+**Message 2**
 
-Sender: Alex Rivera (alex.r@gmail.com)
-Main points: Thanking Jamie and mentioning Lisa might join them for dinner.
-Requests or questions raised: Hope that’s cool!
-Message 4
+* **Sender:** Jamie Lee
+* **Main Points:** Confirms the dinner plans (7:30 PM at Paolo's) are still on. States that the movie tickets have been booked (providing details: Screen 5, Row D, Seats 7 & 8).
+* **Requests/Questions Raised:** None.
 
-Sender: Jamie Lee (jamie.lee@yahoo.com)
-Main points: Saying it's fine for Lisa to join and asking if she should inform the restaurant.
-Requests or questions raised: Should I tell the restaurant to make it 3 ppl?
-Message 5
+**Message 3**
 
-Sender: Alex Rivera (alex.r@gmail.com)
-Main points: Agreeing that Jamie should inform the restaurant about the extra person.
-Requests or questions raised: None.
+* **Sender:** Alex Rivera
+* **Main Points:** Acknowledges Jamie's confirmation and thanks Jamie (presumably for booking tickets). Informs Jamie that another person, Lisa, might join them for dinner.
+* **Requests/Questions Raised:** Asks (implicitly) if it's okay ("Hope that's cool!") for Lisa to join them for dinner.
+
+**Message 4**
+
+* **Sender:** Jamie Lee
+* **Main Points:** Confirms that it is okay for Lisa to join them for dinner.
+* **Requests/Questions Raised:** Asks if Jamie should inform the restaurant to change the reservation to three people.
+
+**Message 5**
+
+* **Sender:** Alex Rivera
+* **Main Points:** Agrees that Jamie should update the restaurant reservation to three people. Thanks Jamie for doing so.
+* **Requests/Questions Raised:** None (Confirms Jamie's suggested action).
 
 **Evaluation**
-The model performed better than expected. It was able to recognize action items that had already been resolved and only listed those that needed to be pursued following the email conversation. The model includes the sender email within the message by message breakdown as well, which also makes it more convenient in analysis
+The model performed better than expected. It was able to recognize action items that had already been resolved and only listed those that needed to be pursued following the email conversation, and outlined an implicit deadline. The model includes the sender email within the message by message breakdown as well, which also makes it more convenient in analysis. However, it did provide the summary in a bullet format instead of a paragraph so that was a bit different from our desired outcome. 
