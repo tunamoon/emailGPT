@@ -1,44 +1,172 @@
+:root {
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-orange: #EB5A36;
+  --color-salmon: #E6917B;
+  --color-blue-dark: #4285F4;
+  --color-blue-light: #99B7E7;
+  --color-muted-text: #5f6368;
+  --color-error: #d32f2f;
+  --color-error-bg: #ffebee;
+}
+
+
+/* High Level Stuff */
 .App {
-    color: black;
-    text-align: center;
+  color: var(--color-black);
+  background-color: var(--color-white);
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+  padding-top: 0rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .container {
   width: 400px;
   padding: 1rem;
-  background-color: white;
+  background-color: var(--color-white);
 }
 
-button {
-  margin-top: 1rem;
+
+/* Title and Top Bar */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.title-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+  color: #202124;
+}
+
+.title-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.top-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Buttons */
+.btn {
   padding: 0.5rem 1rem;
-  margin-right: 0.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: var(--color-white);
 }
 
+.btn-primary {
+  background-color: var(--color-blue-dark);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-orange);
+}
+
+.btn-light {
+  background-color: var(--color-blue-light);
+}
+
+.btn-disabled {
+  background-color: var(--color-blue-light);
+  cursor: not-allowed;
+}
+
+
+/* Error Stuff */
+.error-message {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  text-align: left;
+  color: var(--color-error);
+  background-color: var(--color-error-bg);
+}
+
+
+/* Email Input: */
 input {
   display: block;
   margin-top: 0.5rem;
 }
 
-.error-message {
-  margin-top: 1rem;
-  padding: 0.5rem;
-  color: #d32f2f;
-  background-color: #ffebee;
-  border-radius: 4px;
-  text-align: left;
+.email-input {
+  width: 100%;
+  max-width: 600px;
+  height: 200px;
+  padding: 10px;
+  font-size: 14px;
+  font-family: sans-serif;
+  line-height: 1.5;
+  border: 1px solid var(--color-orange);
+  background-color: var(--color-white);
+  border-radius: 8px;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+  resize: vertical;
+  box-sizing: border-box;
 }
 
+
+/* Analysis Result */
 .response-container {
   margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid #e0e0e0;
+  padding: 10px;
+  border: 1px solid var(--color-blue-dark);
   border-radius: 4px;
-  background-color: #f5f5f5;
+  background-color: var(--color-white);
   text-align: left;
+  width: 100%;
+  max-width: 600px;
+  box-sizing: border-box;
 }
 
 .response-text {
   white-space: pre-line;
   font-size: 14px;
+}
+
+/* Other */
+label {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+  font-size: 14px;
+  gap: 0.5rem;
+}
+
+input[type="checkbox"] {
+  margin: 0;
+}
+
+
+.instructions{
+  font-size: 0.95rem;
+  color: var(--color-orange);
+  margin-bottom: 0.75rem;
+  text-align: left;
+  max-width: 500px;
+}
+
+.action-panel {
+  width: 100%;
+  text-align: left;
+  max-width: 600px;
 }
