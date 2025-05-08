@@ -60,6 +60,9 @@ export class GeminiService {
       case 'message-breakdown':
         prompt = `Break down this email thread message by message. For each message, provide: 1) Sender, 2) Main points, and 3) Any requests or questions raised:\n\n${emailContent}`;
         break;
+      case 'suggest-reply':
+        prompt = `Based on the following email thread, write a helpful, concise, and polite reply that the user could send. Assume the user is the recipient of the last message in the thread:\n\n${emailContent}`;
+        break;
       default:
         prompt = `Analyze the following email thread and provide helpful insights:\n\n${emailContent}`;
     }
