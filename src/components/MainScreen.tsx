@@ -2,6 +2,10 @@ import React, { useState, ChangeEvent, useEffect } from "react";
 import "../App.css";
 import { GeminiService } from "../GeminiService";
 import EmailGPTStar from "../assets/EmailGPTStar.png";
+import History, { HistoryItem } from "./History";
+
+
+
 
 interface CheckboxProps {
   label: string;
@@ -35,7 +39,9 @@ function MainScreen({ onLogout, apiKey }: Props) {
   const [responseText, setResponseText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isApiKeyValid, setIsApiKeyValid] = useState(true);
+  const [isApiKeyValid, setIsApiKeyValid] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<'analyze' | 'history'>('analyze');
+  const [currentAnalysisType, setCurrentAnalysisType] = useState<string>("");
 
   useEffect(() => {
     validateApiKey();
@@ -111,6 +117,25 @@ function MainScreen({ onLogout, apiKey }: Props) {
   const [suggestedReply, setSuggestedReply] = useState<string>("");
   const [isGeneratingReply, setIsGeneratingReply] = useState(false);
 
+
+  const saveToHistory = (emailContent: string, result: string, type: string) => {
+    chrome.storage.local.get(['emailHistory'], (data) => {
+      const history = data.emailHistory || [];
+      const newItem: HistoryItem = {
+        id: Date.now().toString(),
+        timestamp: Date.now(),
+        emailContent: emailContent,
+        analysisResult: result,
+        analysisType: type
+      };
+      
+      // Add new item at the beginning of the array
+      const updatedHistory = [newItem, ...history].slice(0, 20); // Keep only 20 most recent items
+      
+      chrome.storage.local.set({ emailHistory: updatedHistory });
+    });
+  };
+
   // Handle Suggested Reply
   const handleSuggestedReply = async () => {
     if (!responseText) {
@@ -151,6 +176,25 @@ function MainScreen({ onLogout, apiKey }: Props) {
   const isSuggestButtonDisabled = !canSuggestReply || isAIProcessing;
 
 
+  const handleSelectHistoryItem = (item: HistoryItem) => {
+    setTextValue(item.emailContent);
+    setResponseText(item.analysisResult);
+    setCurrentAnalysisType(item.analysisType);
+    
+    // Update checkboxes based on selected history item
+    if (item.analysisType === 'action-items') uncheckOthers(1);
+    if (item.analysisType === 'summarize') uncheckOthers(2);
+    if (item.analysisType === 'message-breakdown') uncheckOthers(3);
+    
+    // Switch to analyze tab to show the selected history item
+    setActiveTab('analyze');
+  };
+
+  const handleClearHistory = () => {
+    // This is just for clearing state if needed after history is cleared
+    // The actual clearing happens in the History component
+  };
+
   return (
     <div className="App">
       <div className="top-bar">
@@ -169,62 +213,83 @@ function MainScreen({ onLogout, apiKey }: Props) {
         </div>
       </div>
 
-      <p className="instructions">Copy the full email thread and paste it below:</p>
-      <textarea
-        id="my-textbox"
-        className="email-input"
-        value={textValue}
-        onChange={handleTextChange}
-      />
-
-      <div className="action-panel">
-        <p className="instructions">Select which function you would like:</p>
-        <Checkbox label="Action Items" onChange={(c) => c && uncheckOthers(1)} checked={isChecked1} />
-        <Checkbox label="Summarizing" onChange={(c) => c && uncheckOthers(2)} checked={isChecked2} />
-        <Checkbox label="Message by message breakdown" onChange={(c) => c && uncheckOthers(3)} checked={isChecked3} />
-        <br></br>
-        <button
-          className={`btn ${isGoButtonDisabled ? 'btn-disabled' : 'btn-primary'} go-button`}
-          onClick={handleDone}
-          disabled={isGoButtonDisabled}
+      <div className="tabs">
+        <div 
+          className={`tab ${activeTab === 'analyze' ? 'active' : ''}`}
+          onClick={() => setActiveTab('analyze')}
         >
-          {isLoading ? 'Analyzing...' : 'Go'}
-        </button>
-
+          Analyze Email
+        </div>
+        <div 
+          className={`tab ${activeTab === 'history' ? 'active' : ''}`}
+          onClick={() => setActiveTab('history')}
+        >
+          History
+        </div>
       </div>
 
-      {error && (
-        <div className="error-message">
-          <p>Error: {error}</p>
-        </div>
+      {activeTab === 'analyze' ? (
+        <>
+          <p className="instructions">Copy the full email thread and paste it below:</p>
+          <textarea
+            id="my-textbox"
+            className="email-input"
+            value={textValue}
+            onChange={handleTextChange}
+          />
+
+          <div className="action-panel">
+            <p className="instructions">Select which function you would like:</p>
+            <Checkbox label="Action Items" onChange={(c) => c && uncheckOthers(1)} checked={isChecked1} />
+            <Checkbox label="Summarizing" onChange={(c) => c && uncheckOthers(2)} checked={isChecked2} />
+            <Checkbox label="Message by message breakdown" onChange={(c) => c && uncheckOthers(3)} checked={isChecked3} />
+            <br></br>
+            <button
+              className={`btn ${isGoButtonDisabled ? 'btn-disabled' : 'btn-primary'} go-button`}
+              onClick={handleDone}
+              disabled={isGoButtonDisabled}
+            >
+              {isLoading ? 'Analyzing...' : 'Go'}
+            </button>
+          </div>
+
+          {error && (
+            <div className="error-message">
+              <p>Error: {error}</p>
+            </div>
+          )}
+
+          {responseText && (
+            <div className="response-container">
+              <h3>Analysis Result:</h3>
+              <div className="response-text">{responseText}</div>
+            </div>
+          )}
+
+          <br />
+          {responseText && (
+            <button
+              className={`btn ${isSuggestButtonDisabled ? 'btn-disabled' : 'btn-primary'}`}
+              onClick={handleSuggestedReply}
+              disabled={isSuggestButtonDisabled}
+            >
+              {isGeneratingReply ? "Generating..." : "Suggest a Reply"}
+            </button>
+          )}
+
+          {suggestedReply && (
+            <div className="response-container">
+              <h3>Suggested Reply:</h3>
+              <div className="response-text">{suggestedReply}</div>
+            </div>
+          )}
+        </>
+      ) : (
+        <History 
+          onSelectHistoryItem={handleSelectHistoryItem} 
+          onClearHistory={handleClearHistory} 
+        />
       )}
-
-      {responseText && (
-        <div className="response-container">
-          <h3>Analysis Result:</h3>
-          <div className="response-text">{responseText}</div>
-        </div>
-      )}
-
-      <br></br>
-      {responseText && (
-      <button
-        className={`btn ${isSuggestButtonDisabled ? 'btn-disabled' : 'btn-primary'}`}
-        onClick={handleSuggestedReply}
-        disabled={isSuggestButtonDisabled}
-      >
-        {isGeneratingReply ? "Generating..." : "Suggest a Reply"}
-      </button>
-    )}
-
-
-      {suggestedReply && (
-        <div className="response-container">
-          <h3>Suggested Reply:</h3>
-          <div className="response-text">{suggestedReply}</div>
-        </div>
-      )}
-
     </div>
   );
 }
