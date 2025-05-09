@@ -5,6 +5,14 @@ export interface GeminiResponse {
   error?: string;
 }
 
+export interface HistoryItem {
+  id: string;
+  timestamp: number;
+  emailContent: string;
+  analysisResult: string;
+  analysisType: string;
+}
+
 export class GeminiService {
   private genAI: GoogleGenerativeAI;
   private model: string = 'gemini-2.5-pro-exp-03-25';
@@ -64,6 +72,39 @@ export class GeminiService {
         prompt = `Analyze the following email thread and provide helpful insights:\n\n${emailContent}`;
     }
     
-    return this.generateResponse(prompt);
+    const response = await this.generateResponse(prompt);
+    
+    // If successful, save to history
+    if (response.text && !response.error) {
+      this.saveToHistory(emailContent, response.text, analysisType);
+    }
+    
+    return response;
+  }
+  private saveToHistory(emailContent: string, analysisResult: string, analysisType: string): void {
+    // Generate a unique ID using timestamp and random string
+    const historyItem: HistoryItem = {
+      id: Date.now().toString() + '-' + Math.random().toString(36).substring(2, 9),
+      timestamp: Date.now(),
+      emailContent,
+      analysisResult,
+      analysisType
+    };
+    
+    // Get existing history and append new item
+    chrome.storage.local.get(['emailHistory'], (result) => {
+      let history: HistoryItem[] = result.emailHistory || [];
+      
+      // Add new item to beginning of array
+      history.unshift(historyItem);
+      
+      // Limit history to 50 items
+      if (history.length > 50) {
+        history = history.slice(0, 50);
+      }
+      
+      // Save updated history
+      chrome.storage.local.set({ emailHistory: history });
+    });
   }
 }

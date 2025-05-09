@@ -1,6 +1,10 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
 import "../App.css";
 import { GeminiService, GeminiResponse } from "../GeminiService";
+import History, { HistoryItem } from "./History";
+
+
+
 
 interface CheckboxProps {
   label: string;
@@ -34,6 +38,8 @@ function MainScreen({ onLogout, apiKey }: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isApiKeyValid, setIsApiKeyValid] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<'analyze' | 'history'>('analyze');
+  const [currentAnalysisType, setCurrentAnalysisType] = useState<string>("");
 
   // Check API key when component loads and load previous results
   useEffect(() => {
@@ -151,61 +157,103 @@ function MainScreen({ onLogout, apiKey }: Props) {
     return "Analyze Email";
   };
 
+  const handleSelectHistoryItem = (item: HistoryItem) => {
+    setTextValue(item.emailContent);
+    setResponseText(item.analysisResult);
+    setCurrentAnalysisType(item.analysisType);
+    
+    // Update checkboxes based on selected history item
+    if (item.analysisType === 'action-items') uncheckOthers(1);
+    if (item.analysisType === 'summarize') uncheckOthers(2);
+    if (item.analysisType === 'message-breakdown') uncheckOthers(3);
+    
+    // Switch to analyze tab to show the selected history item
+    setActiveTab('analyze');
+  };
+
+  const handleClearHistory = () => {
+    // This is just for clearing state if needed after history is cleared
+    // The actual clearing happens in the History component
+  };
+
   return (
     <div className="App">
       <p>Breaking Chains</p>
-      <label htmlFor="my-textbox">Click reply, three dots, copy and paste the email thread content underneath</label>
-      <input
-        type="text"
-        id="my-textbox"
-        value={textValue}
-        onChange={handleTextChange}
-        style={{ width: "400px", height: "200px", fontSize: "12px", textAlign: "left"}}
-      />
-      <div>
-        <Checkbox
-          label="Action Items"
-          onChange={(checked) => checked && uncheckOthers(1)}
-          checked={isChecked1}
-        />
-        <Checkbox
-          label="Summarizing"
-          onChange={(checked) => checked && uncheckOthers(2)}
-          checked={isChecked2}
-        />
-        <Checkbox
-          label="Message by message breakdown"
-          onChange={(checked) => checked && uncheckOthers(3)}
-          checked={isChecked3}
-        />
+      <div className="tabs">
+        <div 
+          className={`tab ${activeTab === 'analyze' ? 'active' : ''}`}
+          onClick={() => setActiveTab('analyze')}
+        >
+          Analyze
+        </div>
+        <div 
+          className={`tab ${activeTab === 'history' ? 'active' : ''}`}
+          onClick={() => setActiveTab('history')}
+        >
+          History
+        </div>
       </div>
-      
-      <button onClick={handleDone} disabled={isLoading || !isApiKeyValid}>
-        {getButtonLabel()}
-      </button>
-      <button onClick={onLogout}>Log out</button>
-      <button
-        onClick={() =>
-            window.open(
-            "https://github.com/etwitmyer/EmailGPT-Page",
-            "_blank"
-            )
-        }
-    > 
-        About
-     </button>
+      {activeTab === 'analyze' ? (
+        <>
+          <label htmlFor="my-textbox">Click reply, three dots, copy and paste the email thread content underneath</label>
+          <input
+            type="text"
+            id="my-textbox"
+            value={textValue}
+            onChange={handleTextChange}
+            style={{ width: "400px", height: "200px", fontSize: "12px", textAlign: "left"}}
+          />
+          <div>
+            <Checkbox
+              label="Action Items"
+              onChange={(checked) => checked && uncheckOthers(1)}
+              checked={isChecked1}
+            />
+            <Checkbox
+              label="Summarizing"
+              onChange={(checked) => checked && uncheckOthers(2)}
+              checked={isChecked2}
+            />
+            <Checkbox
+              label="Message by message breakdown"
+              onChange={(checked) => checked && uncheckOthers(3)}
+              checked={isChecked3}
+            />
+          </div>
+          
+          <button onClick={handleDone} disabled={isLoading || !isApiKeyValid}>
+            {getButtonLabel()}
+          </button>
+          <button onClick={onLogout}>Log out</button>
+          <button
+            onClick={() =>
+                window.open(
+                "https://github.com/etwitmyer/EmailGPT-Page",
+                "_blank"
+                )
+            }
+          > 
+            About
+          </button>
 
-      {error && (
-        <div className="error-message">
-          <p>Error: {error}</p>
-        </div>
-      )}
+          {error && (
+            <div className="error-message">
+              <p>Error: {error}</p>
+            </div>
+          )}
 
-      {responseText && (
-        <div className="response-container">
-          <h3>Analysis Result:</h3>
-          <div className="response-text">{responseText}</div>
-        </div>
+          {responseText && (
+            <div className="response-container">
+              <h3>Analysis Result:</h3>
+              <div className="response-text">{responseText}</div>
+            </div>
+          )}
+        </>
+      ) : (
+        <History 
+          onSelectHistoryItem={handleSelectHistoryItem} 
+          onClearHistory={handleClearHistory}
+        />
       )}
     </div>
   );
