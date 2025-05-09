@@ -5,8 +5,6 @@ import EmailGPTStar from "../assets/EmailGPTStar.png";
 import History, { HistoryItem } from "./History";
 
 
-
-
 interface CheckboxProps {
   label: string;
   onChange: (checked: boolean) => void;
@@ -42,19 +40,11 @@ function MainScreen({ onLogout, apiKey }: Props) {
   const [isApiKeyValid, setIsApiKeyValid] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'analyze' | 'history'>('analyze');
   const [currentAnalysisType, setCurrentAnalysisType] = useState<string>("");
+  
 
   useEffect(() => {
     validateApiKey();
-    chrome.storage.local.get(
-      ["lastAnalysisResult", "lastEmailContent", "lastAnalysisType"],
-      (result) => {
-        if (result.lastAnalysisResult) setResponseText(result.lastAnalysisResult);
-        if (result.lastEmailContent) setTextValue(result.lastEmailContent);
-        if (result.lastAnalysisType === "action-items") uncheckOthers(1);
-        if (result.lastAnalysisType === "summarize") uncheckOthers(2);
-        if (result.lastAnalysisType === "message-breakdown") uncheckOthers(3);
-      }
-    );
+      
   }, [apiKey]);
 
   const validateApiKey = async () => {
@@ -93,10 +83,7 @@ function MainScreen({ onLogout, apiKey }: Props) {
     if (isChecked2) analysisType = "summarize";
     if (isChecked3) analysisType = "message-breakdown";
 
-    chrome.storage.local.set({
-      lastEmailContent: textValue,
-      lastAnalysisType: analysisType,
-    });
+    setCurrentAnalysisType(analysisType);
 
     try {
       const geminiService = new GeminiService(apiKey);
@@ -104,7 +91,7 @@ function MainScreen({ onLogout, apiKey }: Props) {
       if (response.error) setError(response.error);
       else {
         setResponseText(response.text);
-        chrome.storage.local.set({ lastAnalysisResult: response.text });
+        saveToHistory(textValue, response.text, analysisType); // Save to history
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -180,6 +167,7 @@ function MainScreen({ onLogout, apiKey }: Props) {
     setTextValue(item.emailContent);
     setResponseText(item.analysisResult);
     setCurrentAnalysisType(item.analysisType);
+    setSuggestedReply(""); // Clear suggested reply when loading from history
     
     // Update checkboxes based on selected history item
     if (item.analysisType === 'action-items') uncheckOthers(1);

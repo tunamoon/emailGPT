@@ -19,6 +19,17 @@ export default function App() {
     }
   }, []);
 
+   // Clean up any old persistence data on startup
+   useEffect(() => {
+    if (chrome?.storage?.local && !loading) {
+      chrome.storage.local.remove([
+        "lastAnalysisResult", 
+        "lastEmailContent", 
+        "lastAnalysisType"
+      ]);
+    }
+  }, [loading]);
+  
   // 2️⃣  Helpers
   const logout = () =>
     chrome.storage.local.remove("apiKey", () => setApiKey(null));
