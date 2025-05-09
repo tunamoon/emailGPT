@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
 import "../App.css";
-import { GeminiService, GeminiResponse } from "../GeminiService";
+import { GeminiService } from "../GeminiService";
+import EmailGPTStar from "../assets/EmailGPTStar.png";
 import History, { HistoryItem } from "./History";
 
 
@@ -13,17 +14,18 @@ interface CheckboxProps {
 }
 
 type Props = {
-    onLogout: () => void;
-    apiKey: string;
-}
-const Checkbox: React.FC<CheckboxProps> = ({ label, onChange, checked }) => {
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange(event.target.checked);
-  };
+  onLogout: () => void;
+  apiKey: string;
+};
 
+const Checkbox: React.FC<CheckboxProps> = ({ label, onChange, checked }) => {
   return (
     <label>
-      <input type="checkbox" checked={checked} onChange={handleChange} />
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+      />
       {label}
     </label>
   );
@@ -33,34 +35,24 @@ function MainScreen({ onLogout, apiKey }: Props) {
   const [isChecked1, setIsChecked1] = useState(false);
   const [isChecked2, setIsChecked2] = useState(false);
   const [isChecked3, setIsChecked3] = useState(false);
-  const [textValue, setTextValue] = useState<string>("");
-  const [responseText, setResponseText] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [textValue, setTextValue] = useState("");
+  const [responseText, setResponseText] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isApiKeyValid, setIsApiKeyValid] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'analyze' | 'history'>('analyze');
   const [currentAnalysisType, setCurrentAnalysisType] = useState<string>("");
 
-  // Check API key when component loads and load previous results
   useEffect(() => {
     validateApiKey();
-    
-    // Load previous session data if available
     chrome.storage.local.get(
-      ['lastAnalysisResult', 'lastEmailContent', 'lastAnalysisType'], 
+      ["lastAnalysisResult", "lastEmailContent", "lastAnalysisType"],
       (result) => {
-        if (result.lastAnalysisResult) {
-          setResponseText(result.lastAnalysisResult);
-        }
-        if (result.lastEmailContent) {
-          setTextValue(result.lastEmailContent);
-        }
-        if (result.lastAnalysisType) {
-          // Set the appropriate checkbox based on previously selected analysis type
-          if (result.lastAnalysisType === 'action-items') uncheckOthers(1);
-          if (result.lastAnalysisType === 'summarize') uncheckOthers(2);
-          if (result.lastAnalysisType === 'message-breakdown') uncheckOthers(3);
-        }
+        if (result.lastAnalysisResult) setResponseText(result.lastAnalysisResult);
+        if (result.lastEmailContent) setTextValue(result.lastEmailContent);
+        if (result.lastAnalysisType === "action-items") uncheckOthers(1);
+        if (result.lastAnalysisType === "summarize") uncheckOthers(2);
+        if (result.lastAnalysisType === "message-breakdown") uncheckOthers(3);
       }
     );
   }, [apiKey]);
@@ -70,23 +62,11 @@ function MainScreen({ onLogout, apiKey }: Props) {
       const geminiService = new GeminiService(apiKey);
       const validation = await geminiService.validateApiKey();
       setIsApiKeyValid(validation.valid);
-      if (!validation.valid) {
-        setError(`API key validation failed: ${validation.error}. Please log out and enter a valid key.`);
-      }
-    } catch (err) {
+      if (!validation.valid) setError(`API key validation failed: ${validation.error}`);
+    } catch {
       setIsApiKeyValid(false);
       setError("Failed to validate API key. Please log out and try again.");
     }
-  };
-
-  const handleCheckBoxChange1 = (checked: boolean) => {
-    setIsChecked1(checked);
-  };
-  const handleCheckBoxChange2 = (checked: boolean) => {
-    setIsChecked2(checked);
-  };
-  const handleCheckBoxChange3 = (checked: boolean) => {
-    setIsChecked3(checked);
   };
 
   const uncheckOthers = (except: number) => {
@@ -95,51 +75,35 @@ function MainScreen({ onLogout, apiKey }: Props) {
     setIsChecked3(except === 3);
   };
 
-  const handleTextChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setTextValue(event.target.value);
+  const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setTextValue(e.target.value);
   };
 
   const handleDone = async () => {
     const isCheckboxSelected = isChecked1 || isChecked2 || isChecked3;
-    if (!isCheckboxSelected) {
-      alert("Please select one option.");
-      return;
-    }
-    if (textValue.trim() === "") {
-      alert("Please fill out the email content.");
-      return;
-    }
-    
-    // Validate API key before proceeding
-    if (!isApiKeyValid) {
-      setError("Your API key appears to be invalid. Please log out and enter a valid key.");
-      return;
-    }
-    
+    if (!isCheckboxSelected) return alert("Please select one option.");
+    if (textValue.trim() === "") return alert("Please fill out the email content.");
+    if (!isApiKeyValid) return setError("Invalid API key. Please log out and try again.");
+
     setIsLoading(true);
     setError(null);
-    
+
     let analysisType = "";
     if (isChecked1) analysisType = "action-items";
     if (isChecked2) analysisType = "summarize";
     if (isChecked3) analysisType = "message-breakdown";
-    
-    // Save the current email content and analysis type
-    chrome.storage.local.set({ 
+
+    chrome.storage.local.set({
       lastEmailContent: textValue,
-      lastAnalysisType: analysisType 
+      lastAnalysisType: analysisType,
     });
-    
+
     try {
       const geminiService = new GeminiService(apiKey);
       const response = await geminiService.analyzeEmail(textValue, analysisType);
-      
-      if (response.error) {
-        setError(response.error);
-      } else {
+      if (response.error) setError(response.error);
+      else {
         setResponseText(response.text);
-        
-        // Save the result to Chrome storage
         chrome.storage.local.set({ lastAnalysisResult: response.text });
       }
     } catch (err) {
@@ -149,13 +113,49 @@ function MainScreen({ onLogout, apiKey }: Props) {
     }
   };
 
-  const getButtonLabel = () => {
-    if (isLoading) return "Processing...";
-    if (isChecked1) return "Find My Action Items";
-    if (isChecked2) return "Summarize This Thread";
-    if (isChecked3) return "Break Down Messages";
-    return "Analyze Email";
+  // Suggested Reply State
+  const [suggestedReply, setSuggestedReply] = useState<string>("");
+  const [isGeneratingReply, setIsGeneratingReply] = useState(false);
+
+  // Handle Suggested Reply
+  const handleSuggestedReply = async () => {
+    if (!responseText) {
+      alert("You must generate a summary before requesting a reply.");
+      return;
+    }
+  
+    setIsGeneratingReply(true);
+    setError(null);
+  
+    try {
+      const geminiService = new GeminiService(apiKey);
+      const response = await geminiService.analyzeEmail(
+        responseText,
+        "suggest-reply"
+      );
+  
+      if (response.error) {
+        setError(response.error);
+      } else {
+        setSuggestedReply(response.text);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
+    } finally {
+      setIsGeneratingReply(false);
+    }
   };
+  
+  const isAIProcessing = isLoading || isGeneratingReply;
+
+  //Conditional logic for go buttons
+  const isReadyToGo = (textValue.trim() !== "") && (isChecked1 || isChecked2 || isChecked3);
+  const isGoButtonDisabled = (!isReadyToGo || isAIProcessing || !isApiKeyValid);
+
+  //Conditional logic for suggested reply button
+  const canSuggestReply = responseText.trim() !== "";
+  const isSuggestButtonDisabled = !canSuggestReply || isAIProcessing;
+
 
   const handleSelectHistoryItem = (item: HistoryItem) => {
     setTextValue(item.emailContent);
@@ -178,63 +178,45 @@ function MainScreen({ onLogout, apiKey }: Props) {
 
   return (
     <div className="App">
-      <p>Breaking Chains</p>
-      <div className="tabs">
-        <div 
-          className={`tab ${activeTab === 'analyze' ? 'active' : ''}`}
-          onClick={() => setActiveTab('analyze')}
-        >
-          Analyze
+      <div className="top-bar">
+        <div className="title-left">
+          <img src={EmailGPTStar} alt="icon" className="title-icon" />
+          <h1 className="title">EmailGPT</h1>
         </div>
-        <div 
-          className={`tab ${activeTab === 'history' ? 'active' : ''}`}
-          onClick={() => setActiveTab('history')}
-        >
-          History
-        </div>
-      </div>
-      {activeTab === 'analyze' ? (
-        <>
-          <label htmlFor="my-textbox">Click reply, three dots, copy and paste the email thread content underneath</label>
-          <input
-            type="text"
-            id="my-textbox"
-            value={textValue}
-            onChange={handleTextChange}
-            style={{ width: "400px", height: "200px", fontSize: "12px", textAlign: "left"}}
-          />
-          <div>
-            <Checkbox
-              label="Action Items"
-              onChange={(checked) => checked && uncheckOthers(1)}
-              checked={isChecked1}
-            />
-            <Checkbox
-              label="Summarizing"
-              onChange={(checked) => checked && uncheckOthers(2)}
-              checked={isChecked2}
-            />
-            <Checkbox
-              label="Message by message breakdown"
-              onChange={(checked) => checked && uncheckOthers(3)}
-              checked={isChecked3}
-            />
-          </div>
-          
-          <button onClick={handleDone} disabled={isLoading || !isApiKeyValid}>
-            {getButtonLabel()}
-          </button>
-          <button onClick={onLogout}>Log out</button>
+        <div className="top-buttons">
+          <button className="btn btn-primary small-button" onClick={onLogout}>Log out</button>
           <button
-            onClick={() =>
-                window.open(
-                "https://github.com/etwitmyer/EmailGPT-Page",
-                "_blank"
-                )
-            }
-          > 
+            className="btn btn-primary small-button"
+            onClick={() => window.open("https://etwitmyer.github.io/EmailGPT-Page/", "_blank")}
+          >
             About
           </button>
+        </div>
+      </div>
+
+      <p className="instructions">Copy the full email thread and paste it below:</p>
+      <textarea
+        id="my-textbox"
+        className="email-input"
+        value={textValue}
+        onChange={handleTextChange}
+      />
+
+      <div className="action-panel">
+        <p className="instructions">Select which function you would like:</p>
+        <Checkbox label="Action Items" onChange={(c) => c && uncheckOthers(1)} checked={isChecked1} />
+        <Checkbox label="Summarizing" onChange={(c) => c && uncheckOthers(2)} checked={isChecked2} />
+        <Checkbox label="Message by message breakdown" onChange={(c) => c && uncheckOthers(3)} checked={isChecked3} />
+        <br></br>
+        <button
+          className={`btn ${isGoButtonDisabled ? 'btn-disabled' : 'btn-primary'} go-button`}
+          onClick={handleDone}
+          disabled={isGoButtonDisabled}
+        >
+          {isLoading ? 'Analyzing...' : 'Go'}
+        </button>
+
+      </div>
 
           {error && (
             <div className="error-message">
@@ -255,6 +237,26 @@ function MainScreen({ onLogout, apiKey }: Props) {
           onClearHistory={handleClearHistory}
         />
       )}
+
+      <br></br>
+      {responseText && (
+      <button
+        className={`btn ${isSuggestButtonDisabled ? 'btn-disabled' : 'btn-primary'}`}
+        onClick={handleSuggestedReply}
+        disabled={isSuggestButtonDisabled}
+      >
+        {isGeneratingReply ? "Generating..." : "Suggest a Reply"}
+      </button>
+    )}
+
+
+      {suggestedReply && (
+        <div className="response-container">
+          <h3>Suggested Reply:</h3>
+          <div className="response-text">{suggestedReply}</div>
+        </div>
+      )}
+
     </div>
   );
 }
