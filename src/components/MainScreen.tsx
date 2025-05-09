@@ -107,6 +107,50 @@ function MainScreen({ onLogout, apiKey }: Props) {
     }
   };
 
+  // Suggested Reply State
+  const [suggestedReply, setSuggestedReply] = useState<string>("");
+  const [isGeneratingReply, setIsGeneratingReply] = useState(false);
+
+  // Handle Suggested Reply
+  const handleSuggestedReply = async () => {
+    if (!responseText) {
+      alert("You must generate a summary before requesting a reply.");
+      return;
+    }
+  
+    setIsGeneratingReply(true);
+    setError(null);
+  
+    try {
+      const geminiService = new GeminiService(apiKey);
+      const response = await geminiService.analyzeEmail(
+        responseText,
+        "suggest-reply"
+      );
+  
+      if (response.error) {
+        setError(response.error);
+      } else {
+        setSuggestedReply(response.text);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
+    } finally {
+      setIsGeneratingReply(false);
+    }
+  };
+  
+  const isAIProcessing = isLoading || isGeneratingReply;
+
+  //Conditional logic for go buttons
+  const isReadyToGo = (textValue.trim() !== "") && (isChecked1 || isChecked2 || isChecked3);
+  const isGoButtonDisabled = (!isReadyToGo || isAIProcessing || !isApiKeyValid);
+
+  //Conditional logic for suggested reply button
+  const canSuggestReply = responseText.trim() !== "";
+  const isSuggestButtonDisabled = !canSuggestReply || isAIProcessing;
+
+
   return (
     <div className="App">
       <div className="top-bar">
@@ -115,9 +159,9 @@ function MainScreen({ onLogout, apiKey }: Props) {
           <h1 className="title">EmailGPT</h1>
         </div>
         <div className="top-buttons">
-          <button className="btn btn-light small-button" onClick={onLogout}>Log out</button>
+          <button className="btn btn-primary small-button" onClick={onLogout}>Log out</button>
           <button
-            className="btn btn-light small-button"
+            className="btn btn-primary small-button"
             onClick={() => window.open("https://etwitmyer.github.io/EmailGPT-Page/", "_blank")}
           >
             About
@@ -140,12 +184,13 @@ function MainScreen({ onLogout, apiKey }: Props) {
         <Checkbox label="Message by message breakdown" onChange={(c) => c && uncheckOthers(3)} checked={isChecked3} />
         <br></br>
         <button
-          className={`btn ${isChecked1 || isChecked2 || isChecked3 ? 'btn-primary' : 'btn-disabled'} go-button`}
+          className={`btn ${isGoButtonDisabled ? 'btn-disabled' : 'btn-primary'} go-button`}
           onClick={handleDone}
-          disabled={isLoading || !isApiKeyValid}
+          disabled={isGoButtonDisabled}
         >
           {isLoading ? 'Analyzing...' : 'Go'}
         </button>
+
       </div>
 
       {error && (
@@ -160,6 +205,26 @@ function MainScreen({ onLogout, apiKey }: Props) {
           <div className="response-text">{responseText}</div>
         </div>
       )}
+
+      <br></br>
+      {responseText && (
+      <button
+        className={`btn ${isSuggestButtonDisabled ? 'btn-disabled' : 'btn-primary'}`}
+        onClick={handleSuggestedReply}
+        disabled={isSuggestButtonDisabled}
+      >
+        {isGeneratingReply ? "Generating..." : "Suggest a Reply"}
+      </button>
+    )}
+
+
+      {suggestedReply && (
+        <div className="response-container">
+          <h3>Suggested Reply:</h3>
+          <div className="response-text">{suggestedReply}</div>
+        </div>
+      )}
+
     </div>
   );
 }

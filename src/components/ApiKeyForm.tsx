@@ -1,6 +1,7 @@
 // src/components/ApiKeyForm.tsx
 import React, { useState } from "react";
 import { GeminiService } from "../GeminiService";
+import EmailGPTStar from "../assets/EmailGPTStar.png";
 
 type Props = { onSave: (key: string) => void };
 
@@ -34,25 +35,45 @@ export default function ApiKeyForm({ onSave }: Props) {
     }
   };
 
+  const isSubmitDisabled = isValidating;
+
   return (
-    <div className="p-4 w-80 space-y-3">
-      <h2>Enter your API key</h2>
+    // Main container, our App 
+    <div className = "App">
+      {/* Title and Top Bar */}
+      <div className="top-bar">
+        <div className="title-left">
+          <img src={EmailGPTStar} alt="icon" className="title-icon" />
+          <h1 className="title">EmailGPT</h1>
+        </div>
+      </div>
+
+      <p className ="instructions">Enter your Google Gemini API key. This will be stored securely in your browser and used for all requests to the Gemini API</p>
+
       <input
         type="text"
         value={value}
         onChange={e => setValue(e.target.value)}
         style={{ width: "100%" }}
-        placeholder="Enter your Google Gemini API key"
+        placeholder="Type Gemini API key..."
       />
+
       {validationError && (
         <div className="error-message">
           <p>{validationError}</p>
         </div>
       )}
-      <button onClick={handleSubmit} disabled={isValidating}>
+      <br></br>
+      <button
+        className={`btn ${isSubmitDisabled ? 'btn-disabled' : 'btn-primary'}`}
+        onClick={handleSubmit}
+        disabled={isSubmitDisabled}
+      >
         {isValidating ? "Validating..." : "Save & Continue"}
       </button>
-      <p style={{ fontSize: "12px", marginTop: "8px" }}>
+
+
+      <p className= "instructions">
         Don't have an API key? <a href="https://ai.google.dev/tutorials/setup" target="_blank" rel="noopener noreferrer">Get one here</a>
       </p>
     </div>

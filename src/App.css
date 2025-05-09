@@ -81,10 +81,6 @@
   background-color: var(--color-orange);
 }
 
-.btn-light {
-  background-color: var(--color-blue-light);
-}
-
 .btn-disabled {
   background-color: var(--color-blue-light);
   cursor: not-allowed;
