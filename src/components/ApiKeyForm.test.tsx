@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import ApiKeyForm from "./ApiKeyForm";
 import { GeminiService } from "../GeminiService";
 
+jest.mock("../assets/EmailGPTStar.png", () => "mock-image-path");
 jest.mock("../GeminiService");
 
 global.chrome = {
@@ -25,8 +26,11 @@ describe("ApiKeyForm", () => {
 
   it("renders the form correctly", () => {
     render(<ApiKeyForm onSave={mockOnSave} />);
-    expect(screen.getByText("Enter your API key")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Enter your Google Gemini API key")).toBeInTheDocument();
+    
+    // Check for updated text and elements
+    expect(screen.getByText("EmailGPT")).toBeInTheDocument();
+    expect(screen.getByText(/Enter your Google Gemini API key/)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Type Gemini API key...")).toBeInTheDocument();
     expect(screen.getByText("Save & Continue")).toBeInTheDocument();
     expect(screen.getByText("Don't have an API key?")).toBeInTheDocument();
     expect(screen.queryByText("Invalid API key.")).not.toBeInTheDocument();
@@ -45,18 +49,18 @@ describe("ApiKeyForm", () => {
   it("shows validation error when API key is invalid", async () => {
     (GeminiService.prototype.validateApiKey as jest.Mock).mockResolvedValue({
       valid: false,
-      error: "Invalid API key."
+      error: "Invalid API key. Please check and try again."
     });
 
     render(<ApiKeyForm onSave={mockOnSave} />);
     
-    const input = screen.getByPlaceholderText("Enter your Google Gemini API key");
+    const input = screen.getByPlaceholderText("Type Gemini API key...");
     fireEvent.change(input, { target: { value: "invalid-key" } });
     
     fireEvent.click(screen.getByText("Save & Continue"));
     
     await waitFor(() => {
-      expect(screen.getByText("Invalid API key.")).toBeInTheDocument();
+      expect(screen.getByText("Invalid API key. Please check and try again.")).toBeInTheDocument();
       expect(mockOnSave).not.toHaveBeenCalled();
     });
   });
@@ -68,7 +72,7 @@ describe("ApiKeyForm", () => {
 
     render(<ApiKeyForm onSave={mockOnSave} />);
     
-    const input = screen.getByPlaceholderText("Enter your Google Gemini API key");
+    const input = screen.getByPlaceholderText("Type Gemini API key...");
     fireEvent.change(input, { target: { value: "valid-key" } });
     
     fireEvent.click(screen.getByText("Save & Continue"));
