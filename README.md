@@ -9,7 +9,8 @@ EmailGPT is a Chrome extension that solves this problem by providing users with 
 - git clone https://github.com/tunamoon/emailGPT.git
 - In Google Chrome, go to chrome://extensions/
 - Turn on "Developer Mode" and click "Load Unpacked"
-- Select the folder with our repository
+- Select our repository folder (EmailGPT) and then the dist folder
+- Turn our extension on with the toggle
 - Find our feature in the top right corner, with all your other favorite extensions
 - Enjoy all of the fabulous features!
 
