@@ -7,7 +7,7 @@ EmailGPT is a Chrome extension that solves this problem by providing users with 
 - navigate to https://github.com/tunamoon/emailGPT
 - using terminal, navigate to the correct folder
 - git clone https://github.com/tunamoon/emailGPT.git
-- in the root folder (EmailGPT), run npm install
+- in the root folder (EmailGPT), run npm install and npm run build
 - In Google Chrome, go to chrome://extensions/
 - Turn on "Developer Mode" and click "Load Unpacked"
 - Select our repository folder (EmailGPT) and then the dist folder
