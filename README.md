@@ -8,9 +8,8 @@ EmailGPT is a Chrome extension that solves this problem by providing users with 
 - using terminal, navigate to the correct folder
 - git clone https://github.com/tunamoon/emailGPT.git
 - In Google Chrome, go to chrome://extensions/
-- You will see our downloaded extension
-- Turn on "Developer Mode" and click "Load Unpacked" 
-- Input your folder with the repository
+- Turn on "Developer Mode" and click "Load Unpacked"
+- Select the folder with our repository
 - Find our feature in the top right corner, with all your other favorite extensions
 - Enjoy all of the fabulous features!
 
