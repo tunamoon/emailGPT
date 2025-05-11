@@ -48,7 +48,7 @@ export default function ApiKeyForm({ onSave }: Props) {
         </div>
       </div>
 
-      <p className ="instructions">Enter your Google Gemini API key. This will be stored securely in your browser and used for all requests to the Gemini API</p>
+      <p className ="instructions">Enter your Google Gemini API key. This will be stored securely in your browser and used for all requests to the Gemini API.</p>
 
       <input
         type="text"
