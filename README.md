@@ -23,7 +23,7 @@ EmailGPT is a Chrome extension that solves this problem by providing users with 
 - Extraction and display of action items or requests of email chain
 - Suggested response to the most recent email with all context
 - A clean, non-disruptive overlay UI that appears within email for convenient access
-- Saved most recent analysis for ease of access
+- Persistent tracking of email analyses with up to 20 recent items and easy one-click restoration 
 
 # Color Palette
 - HEX: EB5A36
