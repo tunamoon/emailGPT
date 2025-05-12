@@ -32,7 +32,7 @@ EmailGPT is a Chrome extension that solves this problem by providing users with 
 
 # Individual Contributions
 - Luna: Github Repo, Original UI and functional layout, managing errors by users, readme, about button, milestone demo video
-- Lisa: slides, testing documentation, history feature
+- Lisa: Project Slides, Component-based test case files, Testing documentation, History feature storing previous analyses 
 - Emma: Landing Page with hand-drawn icons, Logo/branding creation, team management/communication, summary feature, UX/UI redesign
 - Allen: Integrate with API key,  summarizing feature, action items feature, message by message breakdown feature, saving the most recent entry and result
 - All: manage pull requests
