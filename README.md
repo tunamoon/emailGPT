@@ -33,12 +33,12 @@ EmailGPT is a Chrome extension that solves this problem by providing users with 
 # Individual Contributions
 - Luna: Github Repo, Original UI and functional layout, managing errors by users, readme, about button, milestone demo video
 - Lisa: slides, testing documentation, history feature
-- Emma: Landing Page with hand-drawn icons, Logo/brainding creation, team management/communication, summary feature, UX/UI redesign
-- Allen: Integrate with API key,  summarizing feature, action items feature, message by message breakdown feature, saving most recent entry and result
+- Emma: Landing Page with hand-drawn icons, Logo/branding creation, team management/communication, summary feature, UX/UI redesign
+- Allen: Integrate with API key,  summarizing feature, action items feature, message by message breakdown feature, saving the most recent entry and result
 - All: manage pull requests
   
 # Future Work
-- Customizeable analysis and prompting
+- Customizable analysis and prompting
 - Integrating with several LLM's and not just Gemini
 - Integrating with other communication methods like slack, messages
 - Scraping email threads ourselves and not require user to copy and paste
