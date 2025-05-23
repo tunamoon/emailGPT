@@ -3,6 +3,8 @@ When email chains become too long, it becomes increasingly difficult to extract 
 
 EmailGPT is a Chrome extension that solves this problem by providing users with AI-powered summaries, message-by-message breakdowns, and action item highlights of long email chains powered by the user's Gemini API key. 
 
+Product Landing Page: https://etwitmyer.github.io/EmailGPT-Page/
+
 # Setup Instructions
 - navigate to https://github.com/tunamoon/emailGPT
 - using terminal, navigate to the correct folder
